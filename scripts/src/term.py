@@ -13,6 +13,12 @@ class Term(ABC):
     Realization of this class is abstract, thus it cannot be
     instantiated as is."""
 
+    @property
+    @abstractmethod
+    def variable_names(self) -> tuple[str]:
+        """Returns the tuple of names of variables contained in this term.
+        When there is no variable in this term, it returns empty tuple."""
+
     @abstractmethod
     def evaluate(self, env: Environment = None) -> bool:
         """Tries to evaluate the term.
@@ -78,6 +84,11 @@ class Atom(Term):
         """If the atom is variable (is not defined) returns False. If the
         actual logical value is set (True of False), it returns True."""
         return self._value is not None
+
+    @property
+    def variable_names(self) -> tuple[str]:
+        """Returns name of this atom."""
+        return self.atom_name,
 
     @atom_name.setter
     def atom_name(self, new_name: str):
@@ -148,6 +159,10 @@ class Constant(Atom):
         raise Exception(f"Value of the constant '{self.atom_name}' should "
                         f"never be changed.")
 
+    @property
+    def variable_names(self) -> tuple[str]:
+        return tuple()
+
 
 class Operation(Term):
     """This class defines instances of the logical operators.
@@ -182,6 +197,16 @@ class Operation(Term):
         terms = list(terms)
         self._check_terms(terms)
         self._terms = terms
+
+    @property
+    def variable_names(self) -> tuple[str]:
+        """Returns all the variable names from the contained terms."""
+        names = []
+        for term in self.terms:
+            for variable_name in term.variable_names:
+                if variable_name not in names:
+                    names.append(variable_name)
+        return tuple(names)
 
     def can_be_applied(self, terms: Iterable[Term]) -> bool:
         """Returns if the given terms can be set for this operation."""
