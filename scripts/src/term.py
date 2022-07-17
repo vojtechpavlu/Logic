@@ -19,6 +19,11 @@ class Term(ABC):
         """Returns the tuple of names of variables contained in this term.
         When there is no variable in this term, it returns empty tuple."""
 
+    @property
+    @abstractmethod
+    def clone(self) -> "Term":
+        """Returns a deep copy of this term."""
+
     @abstractmethod
     def evaluate(self, env: Environment = None) -> bool:
         """Tries to evaluate the term.
@@ -38,7 +43,6 @@ class Term(ABC):
             When the evaluation cannot be done. Typical reason is that
             there is an atomic variable without specified value.
         """
-
 
 class Atom(Term):
     """Atom is the most basic logic element. It consists of either constant
@@ -101,6 +105,10 @@ class Atom(Term):
         """Sets the current new value of this atom. This setter allows
         None value."""
         self._value = new_value
+
+    @property
+    def clone(self) -> "Term":
+        return Atom(self.atom_name, self.value)
 
     def evaluate(self, env: Environment = None) -> bool:
         """Tries to evaluate the atom.
