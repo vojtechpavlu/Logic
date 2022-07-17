@@ -7,6 +7,7 @@ from scripts.src.term import Constant
 class TestOperators(unittest.TestCase):
 
     def setUp(self):
+        # Definition of the constants used in tests
         self.t = Constant(True)
         self.f = Constant(False)
 
