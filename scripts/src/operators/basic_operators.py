@@ -4,7 +4,7 @@ equivalence.
 """
 
 
-from scripts.src.term import Operation, Environment
+from scripts.src.term import Operation, Environment, Term
 
 
 class Negation(Operation):
@@ -15,6 +15,10 @@ class Negation(Operation):
     @property
     def cardinality(self) -> int:
         return 1
+
+    @property
+    def clone(self) -> "Term":
+        return Negation(tuple(map(lambda t: t.clone, self.terms)))
 
     def evaluate(self, env: Environment = None) -> bool:
         """Returns the value of the evaluated term turned on the other one.
@@ -42,6 +46,10 @@ class Conjunction(Operation):
     def cardinality(self) -> int:
         return 2
 
+    @property
+    def clone(self) -> "Term":
+        return Conjunction(tuple(map(lambda t: t.clone, self.terms)))
+
     def evaluate(self, env: Environment = None) -> bool:
         """Returns the value calculated of both of the terms. It returns True
         iff both the terms are evaluated as True.
@@ -68,6 +76,10 @@ class Disjunction(Operation):
     @property
     def cardinality(self) -> int:
         return 2
+
+    @property
+    def clone(self) -> "Term":
+        return Disjunction(tuple(map(lambda t: t.clone, self.terms)))
 
     def evaluate(self, env: Environment = None) -> bool:
         """Returns the value calculated of both of the terms. It returns True
@@ -97,6 +109,10 @@ class Implication(Operation):
     @property
     def cardinality(self) -> int:
         return 2
+
+    @property
+    def clone(self) -> "Term":
+        return Implication(tuple(map(lambda t: t.clone, self.terms)))
 
     def evaluate(self, env: Environment = None) -> bool:
         """Returns the value calculated of both of the terms. It returns True
@@ -135,10 +151,12 @@ class Equivalence(Operation):
     def cardinality(self) -> int:
         return 2
 
+    @property
+    def clone(self) -> "Term":
+        return Equivalence(tuple(map(lambda t: t.clone, self.terms)))
+
     def evaluate(self, env: Environment = None) -> bool:
         return self.terms[0].evaluate(env) == self.terms[1].evaluate(env)
-
-
 
 
 
