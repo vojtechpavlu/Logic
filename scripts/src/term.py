@@ -211,15 +211,17 @@ class CustomOperation(Operation):
 
     def __init__(self, cardinality: int, terms: Iterable[Term],
                  evaluator: Callable):
-        """Constructor creating the custom operation.
+        """Initor creating the custom operation.
 
         Parameters
         ----------
         cardinality: int
-            The number of terms the operation can work with
+            The number of terms the operation can work with. Shouldn't be
+            changed in the future.
 
         terms: Iterable of Term
-            The terms the operation has to work with
+            The terms the operation has to work with. These can be changed
+            in the future.
 
         evaluator: Callable
             The function evaluating the terms resulting in returning a
@@ -236,7 +238,10 @@ class CustomOperation(Operation):
 
     @property
     def cardinality(self) -> int:
+        """Returns the given cardinality, i.e. the number of terms
+        the operator can deal with."""
         return self._cardinality
 
     def evaluate(self, env: Environment = None) -> bool:
+        """Invokes the given function for evaluating the given terms."""
         return self._evaluator(env, self.terms)
