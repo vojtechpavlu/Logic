@@ -240,5 +240,3 @@ class CustomOperation(Operation):
 
     def evaluate(self, env: Environment = None) -> bool:
         return self._evaluator(env, self.terms)
-
-c = CustomOperation()
