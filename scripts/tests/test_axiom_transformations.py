@@ -1,5 +1,7 @@
 import unittest
 
+from scripts.src.axiom_transformation.simple_commutativity import \
+    EquivalenceCommutativity
 from scripts.src.term import *
 from scripts.src.operators import *
 from scripts.src.axiom_transformation import (
@@ -102,6 +104,36 @@ class TestDisjunctionCommutativity(unittest.TestCase):
         # Switches the terms of the operation
         self.assertEqual(Disjunction([self.psi, self.phi]),
                          self.a(Disjunction([self.phi, self.psi])))
+
+        # Stays intact
+        self.assertEqual(Conjunction([self.phi, self.psi]),
+                         self.a(Conjunction([self.phi, self.psi])))
+
+
+class TestEquivalenceCommutativity(unittest.TestCase):
+
+    def setUp(self):
+        # Definition of variables
+        self.phi = Atom("PHI")
+        self.psi = Atom("PSI")
+
+        # Can be applied method (careful; method reference only!)
+        self.ca = EquivalenceCommutativity().can_be_applied
+
+        # Application method (careful; method reference only!)
+        self.a = EquivalenceCommutativity().apply
+
+    def test_applicability(self):
+        # Should be applicable on disjunction
+        self.assertEqual(True, self.ca(Equivalence([self.phi, self.psi])))
+
+        # Should not be applicable on conjunction
+        self.assertEqual(False, self.ca(Conjunction([self.phi, self.psi])))
+
+    def test_application(self):
+        # Switches the terms of the operation
+        self.assertEqual(Equivalence([self.psi, self.phi]),
+                         self.a(Equivalence([self.phi, self.psi])))
 
         # Stays intact
         self.assertEqual(Conjunction([self.phi, self.psi]),
