@@ -44,6 +44,15 @@ class Term(ABC):
             there is an atomic variable without specified value.
         """
 
+    def __eq__(self, other: "Term"):
+        """Two terms are meant to be equivalent if and only if they are both
+        type of Term and has the same string representation."""
+        return isinstance(other, Term) and str(self) == str(other)
+
+    def __repr__(self):
+        return str(self)
+
+
 class Atom(Term):
     """Atom is the most basic logic element. It consists of either constant
     value or a variable for logical value itself.
@@ -127,6 +136,10 @@ class Atom(Term):
         else:
             raise Exception(f"Value of atom '{self.atom_name}' is not defined")
 
+    def __str__(self):
+        """Returns string representation of this atom term."""
+        return self.atom_name
+
 
 class Constant(Atom):
     """Special type of the atom. It's given value is constantly set and
@@ -171,6 +184,10 @@ class Constant(Atom):
     def variable_names(self) -> tuple[str]:
         return tuple()
 
+    def __str__(self):
+        """Returns string representation of this constant."""
+        return self.atom_name
+
 
 class Operation(Term):
     """This class defines instances of the logical operators.
@@ -191,6 +208,11 @@ class Operation(Term):
     @abstractmethod
     def cardinality(self) -> int:
         """The number of parameters this operation works with."""
+
+    @property
+    @abstractmethod
+    def operator_sign(self) -> str:
+        """Returns the operator sign of this operation."""
 
     @property
     def terms(self) -> tuple[Term]:
@@ -237,13 +259,17 @@ class Operation(Term):
                 f"Number of terms ({len(self._terms)}) is not equal to "
                 f"cardinality of the operator ({self.cardinality})")
 
+    def __str__(self):
+        return (f"{self.operator_sign}"
+                f"{str(self.terms).replace(' ', '').replace(',)', ')')}")
+
 
 class CustomOperation(Operation):
     """This class provides ability to define and use custom operators
     for any cardinality and with custom way of their evaluation."""
 
     def __init__(self, cardinality: int, terms: Iterable[Term],
-                 evaluator: Callable):
+                 operator_sign: str, evaluator: Callable):
         """Initor creating the custom operation.
 
         Parameters
@@ -255,6 +281,9 @@ class CustomOperation(Operation):
         terms: Iterable of Term
             The terms the operation has to work with. These can be changed
             in the future.
+
+        operator_sign: str
+            Sign used to distinguish this particular operation.
 
         evaluator: Callable
             The function evaluating the terms resulting in returning a
@@ -268,12 +297,23 @@ class CustomOperation(Operation):
                 f"The cardinality cannot be negative: {self._cardinality}")
         Operation.__init__(self, terms)
         self._evaluator = evaluator
+        self._operator_sign = operator_sign
 
     @property
     def cardinality(self) -> int:
         """Returns the given cardinality, i.e. the number of terms
         the operator can deal with."""
         return self._cardinality
+
+    @property
+    def operator_sign(self) -> str:
+        """Returns a sign used for this operation."""
+        return self._operator_sign
+
+    @property
+    def clone(self) -> "Term":
+        return CustomOperation(self._cardinality, self.terms,
+                               self.operator_sign, self._evaluator)
 
     def evaluate(self, env: Environment = None) -> bool:
         """Invokes the given function for evaluating the given terms."""
