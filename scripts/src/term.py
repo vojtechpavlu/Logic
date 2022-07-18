@@ -24,6 +24,14 @@ class Term(ABC):
     def clone(self) -> "Term":
         """Returns a deep copy of this term."""
 
+    @property
+    def terms(self) -> "tuple[Term]":
+        """This property returns None as a default value, because there are
+        no subterms of this term.
+
+        See the Operation class and implementation of this property."""
+        return None
+
     @abstractmethod
     def evaluate(self, env: Environment = None) -> bool:
         """Tries to evaluate the term.
