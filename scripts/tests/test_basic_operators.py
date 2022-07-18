@@ -12,8 +12,8 @@ class TestOperators(unittest.TestCase):
         self.f = Constant(False)
 
     def test_negation(self):
-        self.assertEqual(True,  Negation([self.f]).evaluate())
-        self.assertEqual(False, Negation([self.t]).evaluate())
+        self.assertEqual(True,  Negation(self.f).evaluate())
+        self.assertEqual(False, Negation(self.t).evaluate())
 
     def test_conjunction(self):
         self.assertEqual(False, Conjunction([self.f, self.f]).evaluate())
