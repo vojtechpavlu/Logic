@@ -1,10 +1,9 @@
 name: unittest
 
 on:
+  # Run unit tests every-single-time on every-single-branch and allow custom runs
   pull_request:
-    branches: [ "master" ]
   push:
-    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
