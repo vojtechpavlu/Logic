@@ -3,7 +3,7 @@ import unittest
 from scripts.src.term import *
 from scripts.src.operators import *
 from scripts.src.axiom_transformation import (
-    DoubleNegation, ConjunctionCommutativity)
+    DoubleNegation, ConjunctionCommutativity, DisjunctionCommutativity)
 
 
 class TestDoubleNegation(unittest.TestCase):
@@ -51,6 +51,7 @@ class TestDoubleNegation(unittest.TestCase):
 class TestConjunctionCommutativity(unittest.TestCase):
 
     def setUp(self):
+        # Definition of variables
         self.phi = Atom("PHI")
         self.psi = Atom("PSI")
 
@@ -61,7 +62,10 @@ class TestConjunctionCommutativity(unittest.TestCase):
         self.a = ConjunctionCommutativity().apply
 
     def test_applicability(self):
+        # Should be applicable on conjunction
         self.assertEqual(True, self.ca(Conjunction([self.phi, self.psi])))
+
+        # Should not be applicable on disjunction
         self.assertEqual(False, self.ca(Disjunction([self.phi, self.psi])))
 
     def test_application(self):
@@ -72,6 +76,36 @@ class TestConjunctionCommutativity(unittest.TestCase):
         # Stays intact
         self.assertEqual(Disjunction([self.phi, self.psi]),
                          self.a(Disjunction([self.phi, self.psi])))
+
+
+class TestDisjunctionCommutativity(unittest.TestCase):
+
+    def setUp(self):
+        # Definition of variables
+        self.phi = Atom("PHI")
+        self.psi = Atom("PSI")
+
+        # Can be applied method (careful; method reference only!)
+        self.ca = DisjunctionCommutativity().can_be_applied
+
+        # Application method (careful; method reference only!)
+        self.a = DisjunctionCommutativity().apply
+
+    def test_applicability(self):
+        # Should be applicable on disjunction
+        self.assertEqual(True, self.ca(Disjunction([self.phi, self.psi])))
+
+        # Should not be applicable on conjunction
+        self.assertEqual(False, self.ca(Conjunction([self.phi, self.psi])))
+
+    def test_application(self):
+        # Switches the terms of the operation
+        self.assertEqual(Disjunction([self.psi, self.phi]),
+                         self.a(Disjunction([self.phi, self.psi])))
+
+        # Stays intact
+        self.assertEqual(Conjunction([self.phi, self.psi]),
+                         self.a(Conjunction([self.phi, self.psi])))
 
 
 
