@@ -2,7 +2,8 @@ import unittest
 
 from scripts.src.term import *
 from scripts.src.operators import *
-from scripts.src.axiom_transformation import DoubleNegation
+from scripts.src.axiom_transformation import (
+    DoubleNegation, ConjunctionCommutativity)
 
 
 class TestDoubleNegation(unittest.TestCase):
@@ -45,3 +46,34 @@ class TestDoubleNegation(unittest.TestCase):
         # actually, it should be double negation
         self.assertEqual(Negation, type(self.dn.apply(self.true_const)))
         self.assertEqual(Negation, type(self.dn.apply(self.false_const)))
+
+
+class TestConjunctionCommutativity(unittest.TestCase):
+
+    def setUp(self):
+        self.phi = Atom("PHI")
+        self.psi = Atom("PSI")
+
+        # Can be applied method (careful; method reference only!)
+        self.ca = ConjunctionCommutativity().can_be_applied
+
+        # Application method (careful; method reference only!)
+        self.a = ConjunctionCommutativity().apply
+
+    def test_applicability(self):
+        self.assertEqual(True, self.ca(Conjunction([self.phi, self.psi])))
+        self.assertEqual(False, self.ca(Disjunction([self.phi, self.psi])))
+
+    def test_application(self):
+        # Switches the terms of the operation
+        self.assertEqual(Conjunction([self.psi, self.phi]),
+                         self.a(Conjunction([self.phi, self.psi])))
+
+        # Stays intact
+        self.assertEqual(Disjunction([self.phi, self.psi]),
+                         self.a(Disjunction([self.phi, self.psi])))
+
+
+
+
+
