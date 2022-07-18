@@ -12,13 +12,16 @@ class Negation(Operation):
     the value of it's only internal term on the other one. This means there
     is it's cardinality equal to one."""
 
+    def __init__(self, term: Term):
+        super().__init__((term,))
+
     @property
     def cardinality(self) -> int:
         return 1
 
     @property
     def clone(self) -> "Term":
-        return Negation(tuple(map(lambda t: t.clone, self.terms)))
+        return Negation(self.terms[0].clone)
 
     def evaluate(self, env: Environment = None) -> bool:
         """Returns the value of the evaluated term turned on the other one.
