@@ -192,6 +192,10 @@ class Constant(Atom):
     def variable_names(self) -> tuple[str]:
         return tuple()
 
+    @property
+    def clone(self) -> "Term":
+        return Constant(self.value, self.atom_name)
+
     def __str__(self):
         """Returns string representation of this constant."""
         return self.atom_name
