@@ -12,13 +12,20 @@ class Negation(Operation):
     the value of it's only internal term on the other one. This means there
     is it's cardinality equal to one."""
 
+    def __init__(self, term: Term):
+        super().__init__((term,))
+
     @property
     def cardinality(self) -> int:
         return 1
 
     @property
+    def operator_sign(self) -> str:
+        return "¬"
+
+    @property
     def clone(self) -> "Term":
-        return Negation(tuple(map(lambda t: t.clone, self.terms)))
+        return Negation(self.terms[0].clone)
 
     def evaluate(self, env: Environment = None) -> bool:
         """Returns the value of the evaluated term turned on the other one.
@@ -45,6 +52,10 @@ class Conjunction(Operation):
     @property
     def cardinality(self) -> int:
         return 2
+
+    @property
+    def operator_sign(self) -> str:
+        return "∧"
 
     @property
     def clone(self) -> "Term":
@@ -78,6 +89,10 @@ class Disjunction(Operation):
         return 2
 
     @property
+    def operator_sign(self) -> str:
+        return "∨"
+
+    @property
     def clone(self) -> "Term":
         return Disjunction(tuple(map(lambda t: t.clone, self.terms)))
 
@@ -109,6 +124,10 @@ class Implication(Operation):
     @property
     def cardinality(self) -> int:
         return 2
+
+    @property
+    def operator_sign(self) -> str:
+        return "⇒"
 
     @property
     def clone(self) -> "Term":
@@ -150,6 +169,10 @@ class Equivalence(Operation):
     @property
     def cardinality(self) -> int:
         return 2
+
+    @property
+    def operator_sign(self) -> str:
+        return "⇔"
 
     @property
     def clone(self) -> "Term":
