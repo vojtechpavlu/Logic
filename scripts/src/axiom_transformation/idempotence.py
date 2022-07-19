@@ -77,7 +77,7 @@ class DisjunctionIdempotence(_GeneralIdempotence):
     """
 
     def __init__(self):
-        _GeneralIdempotence.__init__(self, Conjunction)
+        _GeneralIdempotence.__init__(self, Disjunction)
 
 
 
